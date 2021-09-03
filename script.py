@@ -11,7 +11,8 @@ colors = {
     'blue':(64,206,227),
     'navy':(12,53,71),
     'purple':(466,8,99),
-    'orange':(248,54,0)
+    'orange':(248,54,0),
+    'yellow':(255,254,106)
     }
 
 
@@ -44,3 +45,33 @@ class Node:
     def reset_board(self):
         self.color == colors['white']
     
+    def create_blocker(self):
+        self.color == colors['navy']
+
+    def create_start(self):
+        self.color == colors['purple']
+
+    def create_visited(self):
+        self.color == colors['blue']
+    
+    def create_destination(self):
+         return self.color == colors['orange']
+    
+    def make_path(self):
+        return self.color == colors['yellow']
+
+    def draw(self,window):
+        pygame.draw.rect(window,self.color,(self.x,self.y,self.width,self.width))
+    
+    def update_neighbour(self,grid):
+        pass
+
+    def __lt__(self, other):
+        return False
+
+#Making H value value A*(Algo) aka         
+
+def heuristic(point_1,point_2):
+    x1,y1 = point_1
+    x2,y2 = point_2
+    return abs(x1 - x2) +  abs(y1 - y2)
