@@ -66,11 +66,41 @@ class Node:
         pygame.draw.rect(window,self.color,(self.x,self.y,self.width,self.width))
     
     def update_neighbour(self,grid):
-        pass
+        self.neighbours = []
+        #Going down to find the neighbour
+        if self.row < self.total_rows -1 and not grid[self.row + 1][self.col].is_blocked():
+            self.neighbours.append(grid[self.row + 1][self.col])
 
+        #Going up to find the neighbour
+        if self.row > 0 and not grid[self.row - 1][self.col].is_blocked():
+            self.neighbours.append(grid[self.row - 1][self.col])
+
+         #Going right to find the neighbour  
+        if self.col < self.total_rows -1 and not grid[self.row][self.col + 1].is_blocked():
+            self.neighbours.append(grid[self.row][self.col + 1])   
+        
+        #Going left to find the neighbour 
+        if self.col > 0 and not grid[self.row][self.col - 1].is_blocked():
+            self.neighbours.append(grid[self.row][self.col - 1])         
+    
     def __lt__(self, other):
         return False
 
+def a_star_algorithm(draw,grid,start,end):
+    counter = 0
+    open_set = PriorityQueue()
+    open_set.put((0,counter,start))
+
+    #where is the node coming from?
+    coming_from = {}
+
+    global_score = {spot: float('inf') for row in grid for spot in row}
+    
+    #This is here you begin so it's 0
+    global_score [start] = 0 
+
+    f_score = {spot: float('inf') for row in grid for spot in row}
+    f_score [start] = heuristic(start.find_position(),end.find_position())
 #Making H value value A*(Algo) aka         
 
 def heuristic(point_1,point_2):
@@ -179,7 +209,12 @@ def main(win, width):
 				elif spot == end:
 					end = None
             
-
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_KP_ENTER and start and end:
+					for row in grid:
+						for spot in row:
+							spot.update_neighbors(grid)
+					a_star_algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
 
 	pygame.quit()
 
