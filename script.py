@@ -50,7 +50,7 @@ class Node:
     def create_blocker(self):
         self.color = navy
 
-    def make_start(self):
+    def create_start(self):
         self.color = purple
 
     def create_visited(self):
@@ -141,7 +141,7 @@ def get_clicked_pos(pos, rows, width):
 
 
 def main(win, width):
-	rows = 40
+	rows = 30
 	grid = make_board(rows, width)
 
 	start = None
@@ -160,7 +160,7 @@ def main(win, width):
 				location = grid[row][col]
 				if not start and location != end:
 					start = location
-					start.make_start()
+					start.create_start()
 
 				elif not end and location != start:
 					end = location
@@ -168,7 +168,19 @@ def main(win, width):
 
 				elif location != end and location != start:
 					location.create_blocker()
+
+			elif pygame.mouse.get_pressed()[2]: 
+				pos = pygame.mouse.get_pos()
+				row, col = get_clicked_pos(pos, rows, width)
+				spot = grid[row][col]
+				spot.reset_board()
+				if spot == start:
+					start = None
+				elif spot == end:
+					end = None
             
+
+
 	pygame.quit()
 
 main(WINDOW, width)
