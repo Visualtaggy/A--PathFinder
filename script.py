@@ -6,15 +6,16 @@ width = 800
 WINDOW = pygame.display.set_mode((width,width))
 pygame.display.set_caption("A* PathFinder - by Vishal Tyagi")
 
-colors = {
-    'white':(255,255,255),
-    'blue':(64,206,227),
-    'navy':(12,53,71),
-    'purple':(466,8,99),
-    'orange':(248,54,0),
-    'yellow':(255,254,106),
-    'grey':(47,79,79)
-    }
+
+white = (255,255,255)
+blue = (64,206,227)
+navy = (12,53,71)
+purple = (128, 0, 128)
+orange = (248,54,0)
+yellow = (255,254,106)
+grey = (47, 79, 79)
+
+
 
 
 class Node:
@@ -23,7 +24,7 @@ class Node:
         self.col = col
         self.x = row * width
         self.y = col * width
-        self.color = colors['white']
+        self.color = white
         self.neighbours = []
         self.width = width
         self.total_rows = t_rows
@@ -32,34 +33,34 @@ class Node:
         return self.row,self.col
 
     def is_visited(self):
-        return self.color == colors['blue']
+        return self.color == blue
     
     def is_blocked(self):
-        return self.color == colors['navy']
+        return self.color == navy
 
     def is_start(self):
-        return self.color == colors['purple']
+        return self.color == purple
     
     def is_destination(self):
-        return self.color == colors['orange']
+        return self.color == orange
 
     def reset_board(self):
-        self.color == colors['white']
+        self.color = white
     
     def create_blocker(self):
-        self.color == colors['navy']
+        self.color = navy
 
-    def create_start(self):
-        self.color == colors['purple']
+    def make_start(self):
+        self.color = purple
 
     def create_visited(self):
-        self.color == colors['blue']
+        self.color = blue
     
     def create_destination(self):
-         return self.color == colors['orange']
+        self.color = orange
     
-    def make_path(self):
-        return self.color == colors['yellow']
+    def create_path(self):
+        self.color = yellow
 
     def draw(self,window):
         pygame.draw.rect(window,self.color,(self.x,self.y,self.width,self.width))
@@ -105,12 +106,12 @@ def make_board(rows,width):
 def create_grid_lines(window,rows,width):
      node_width = width // rows
      for i in range (rows):
-         pygame.draw.line(window,colors['grey'],(0,i * node_width),(width,i * node_width))
+         pygame.draw.line(window,grey,(0,i * node_width),(width,i * node_width))
          for j in range (rows):
-            pygame.draw.line(window,colors['grey'],(j * node_width,0),(j * node_width,width))         
+            pygame.draw.line(window,grey,(j * node_width,0),(j * node_width,width))         
 
 def draw(window,grid,rows,width):
-    window.fill(colors['white'])
+    window.fill(white)
 
     for row in grid:
         for node in row:
@@ -156,17 +157,17 @@ def main(win, width):
 			if pygame.mouse.get_pressed()[0]:
 				pos = pygame.mouse.get_pos()
 				row, col = get_clicked_pos(pos, rows, width)
-				spot = grid[row][col]
-				if not start and spot != end:
-					start = spot
-					start.create_start()
+				location = grid[row][col]
+				if not start and location != end:
+					start = location
+					start.make_start()
 
-				elif not end and spot != start:
-					end = spot
+				elif not end and location != start:
+					end = location
 					end.create_destination()
 
-				elif spot != end and spot != start:
-					spot.create_destination()
+				elif location != end and location != start:
+					location.create_blocker()
             
 	pygame.quit()
 
