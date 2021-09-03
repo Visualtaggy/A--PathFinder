@@ -75,3 +75,29 @@ def heuristic(point_1,point_2):
     x1,y1 = point_1
     x2,y2 = point_2
     return abs(x1 - x2) +  abs(y1 - y2)
+
+def make_board(rows,width):
+    """
+    Trying to make a datastructre of this sort inorder to store 
+    status of various nodes
+    board = [
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+        [][][][][][][][][][]
+    ]
+
+    """
+    board = []
+    node_width = width // rows
+    for i in range(rows):
+        board.append([])
+        for j in range(rows):
+            node = Node(i,j,node_width,rows)
+            board[i].append(node)
+    return board
+
