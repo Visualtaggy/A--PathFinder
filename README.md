@@ -1,2 +1,2 @@
 # A-Star--PathFinder
-![project-demo](https://github.com/Visualtaggy/Minimalist-TicTacToe-Android/blob/master/demo.gif)
+![project-demo](https://github.com/Visualtaggy/A-Star--PathFinder/blob/master/files/screenshot.gif)
