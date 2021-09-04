@@ -1,90 +1,20 @@
 import pygame
 import math
 from queue import PriorityQueue
+from files.node import *
+from files.theme import *
 
-width = 800
+width = 750
 WINDOW = pygame.display.set_mode((width,width))
 pygame.display.set_caption("A* PathFinder - by Vishal Tyagi")
 
 
-white = (255,255,255)
-blue = (64,206,227)
-navy = (12,53,71)
-purple = (128, 0, 128)
-orange = (248,54,0)
-yellow = (255,254,106)
-grey = (47, 79, 79)
+def display_best_path(previous,current,draw):
+    while current in previous:
+        current = previous[current]
+        current.create_path()
+        draw()
 
-
-
-
-class Node:
-    def __init__(self,row,col,width,t_rows):
-        self.row = row
-        self.col = col
-        self.x = row * width
-        self.y = col * width
-        self.color = white
-        self.neighbours = []
-        self.width = width
-        self.total_rows = t_rows
-
-    def find_position(self):
-        return self.row,self.col
-
-    def is_visited(self):
-        return self.color == blue
-    
-    def is_blocked(self):
-        return self.color == navy
-
-    def is_start(self):
-        return self.color == purple
-    
-    def is_destination(self):
-        return self.color == orange
-
-    def reset_board(self):
-        self.color = white
-    
-    def create_blocker(self):
-        self.color = navy
-
-    def create_start(self):
-        self.color = purple
-
-    def create_visited(self):
-        self.color = blue
-    
-    def create_destination(self):
-        self.color = orange
-    
-    def create_path(self):
-        self.color = yellow
-
-    def draw(self,window):
-        pygame.draw.rect(window,self.color,(self.x,self.y,self.width,self.width))
-    
-    def update_neighbour(self,grid):
-        self.neighbours = []
-        #Going down to find the neighbour
-        if self.row < self.total_rows -1 and not grid[self.row + 1][self.col].is_blocked():
-            self.neighbours.append(grid[self.row + 1][self.col])
-
-        #Going up to find the neighbour
-        if self.row > 0 and not grid[self.row - 1][self.col].is_blocked():
-            self.neighbours.append(grid[self.row - 1][self.col])
-
-         #Going right to find the neighbour  
-        if self.col < self.total_rows -1 and not grid[self.row][self.col + 1].is_blocked():
-            self.neighbours.append(grid[self.row][self.col + 1])   
-        
-        #Going left to find the neighbour 
-        if self.col > 0 and not grid[self.row][self.col - 1].is_blocked():
-            self.neighbours.append(grid[self.row][self.col - 1])         
-    
-    def __lt__(self, other):
-        return False
 
 def a_star_algorithm(draw,grid,start,end):
     counter = 0
@@ -114,8 +44,10 @@ def a_star_algorithm(draw,grid,start,end):
         open_set_tracker.remove(current)
 
         if current == end:
-            #found the path
+            display_best_path(previous,end,draw)
+            end.create_destination()
             return True
+            
         for neighbour in current.neighbours:
             tmp_global_score = global_score[current] + 1
 
@@ -244,12 +176,15 @@ def main(win, width):
 					end = None
             
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_SPACE and start and end:
+				if event.key == pygame.K_RETURN and start and end:
 					for row in grid:
 						for spot in row:
 							spot.update_neighbour(grid)
 					a_star_algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
-
+				if event.key == pygame.K_BACKSPACE:
+					start = None
+					end = None
+					grid = make_board(rows, width)
 	pygame.quit()
 
 main(WINDOW, width)
