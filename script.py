@@ -92,7 +92,7 @@ def a_star_algorithm(draw,grid,start,end):
     open_set.put((0,counter,start))
 
     #where is the node coming from?
-    coming_from = {}
+    previous = {}
 
     global_score = {spot: float('inf') for row in grid for spot in row}
     
@@ -101,8 +101,42 @@ def a_star_algorithm(draw,grid,start,end):
 
     f_score = {spot: float('inf') for row in grid for spot in row}
     f_score [start] = heuristic(start.find_position(),end.find_position())
-#Making H value value A*(Algo) aka         
 
+    #Hash to keep a track of all the things in the priority que
+    open_set_tracker = {start}
+
+    while not open_set.empty():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+         # indexing two because we want just the node NOT the counter       
+        current = open_set.get()[2]
+        open_set_tracker.remove(current)
+
+        if current == end:
+            #found the path
+            return True
+        for neighbour in current.neighbours:
+            tmp_global_score = global_score[current] + 1
+
+            if tmp_global_score < global_score[neighbour]:
+                previous[neighbour] = current
+                global_score[neighbour] = tmp_global_score
+                f_score[neighbour] =tmp_global_score + heuristic(neighbour.find_position(),end.find_position())
+                if neighbour not in open_set_tracker:
+                    counter += 1
+                    open_set.put((f_score[neighbour],counter,neighbour))
+                    open_set_tracker.add(neighbour)
+                    #maybe add color for next available block?
+        draw()
+
+        if current != start:
+            current.create_visited()
+    return False
+
+
+
+#Making H value value A*(Algo) aka         
 def heuristic(point_1,point_2):
     x1,y1 = point_1
     x2,y2 = point_2
@@ -210,10 +244,10 @@ def main(win, width):
 					end = None
             
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_KP_ENTER and start and end:
+				if event.key == pygame.K_SPACE and start and end:
 					for row in grid:
 						for spot in row:
-							spot.update_neighbors(grid)
+							spot.update_neighbour(grid)
 					a_star_algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
 
 	pygame.quit()
